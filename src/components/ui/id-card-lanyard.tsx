@@ -62,6 +62,9 @@ const CSS = `
   font-family:'Work Sans',system-ui,sans-serif;
   position: relative;
   background: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 .idcl-root *{ box-sizing:border-box; }
 
@@ -83,7 +86,7 @@ const CSS = `
 .idcl-rope{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
 
 .idcl-rail{
-  position:absolute; top:0; width:64px; height:6px;
+  position:absolute; top:0; width:clamp(44px, 8vw, 64px); height:6px;
   transform:translateX(-50%);
   background:linear-gradient(180deg, #3a4150, #21252f);
   border-radius:0 0 4px 4px;
@@ -94,24 +97,39 @@ const CSS = `
 
 .idcl-card{
   position:absolute;
-  width:clamp(140px, 25vw, 225px);
+  width:clamp(126px, 25vw, 225px);
   aspect-ratio: 236 / 373;
+  -webkit-perspective:1400px;
   perspective:1400px;
-  cursor:grab; touch-action:none; user-select:none;
+  cursor:grab;
+  touch-action:none;
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;
+  user-select:none;
   transform-origin:top center;
   pointer-events:auto;
   z-index: 5;
+  -webkit-font-smoothing:antialiased;
 }
 .idcl-card:active{ cursor:grabbing; }
 .idcl-card.idcl-active{ z-index: 15; }
 
-.idcl-flipper{ position:relative; width:100%; height:100%; transform-style:preserve-3d; }
+.idcl-flipper{
+  position:relative;
+  width:100%;
+  height:100%;
+  -webkit-transform-style:preserve-3d;
+  transform-style:preserve-3d;
+}
 
 .idcl-face{
   position:absolute; inset:0; border-radius:18px;
-  padding:14px 14px 12px;
+  padding:clamp(10px, 2vw, 14px);
   display:flex; flex-direction:column;
+  -webkit-backface-visibility:hidden;
   backface-visibility:hidden;
+  -webkit-transform-style:preserve-3d;
+  transform-style:preserve-3d;
   overflow:hidden;
   box-shadow:
     0 24px 48px -12px rgba(0,0,0,.45),
@@ -529,8 +547,14 @@ export function DualIDCardLanyard({
     const MAX_TILT = 9;
 
     function resolveAnchors(width: number) {
-      if (width < 460) {
-        // Mobile phone: balance gap and margins
+      if (width < 380) {
+        // Narrow mobile (320px - 380px)
+        return {
+          leftX: width * 0.27,
+          rightX: width * 0.73,
+        };
+      } else if (width < 540) {
+        // Standard mobile (380px - 540px)
         return {
           leftX: width * 0.28,
           rightX: width * 0.72,
@@ -981,7 +1005,7 @@ export function DualIDCardLanyard({
   }, [cardLeft, cardRight]);
 
   return (
-    <div className={`idcl-root relative w-full h-[540px] sm:h-[580px] lg:h-[620px] overflow-visible select-none ${className}`}>
+    <div className={`idcl-root relative w-full h-[460px] sm:h-[530px] lg:h-[590px] overflow-visible select-none ${className}`}>
       <style>{CSS}</style>
 
       <div className="idcl-stage" ref={sceneRef}>

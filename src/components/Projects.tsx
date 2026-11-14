@@ -22,7 +22,11 @@ export function Projects() {
       if (e.key === 'Escape') setSelectedProject(null);
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
   }, [selectedProject]);
 
   const filterButtons: { key: FilterType; label: string; count: number }[] = [
